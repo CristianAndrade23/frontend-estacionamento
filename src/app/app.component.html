@@ -1,0 +1,29 @@
+<div *ngIf="loginFeito">
+<app-menu (fazerLogoffEvent)="recebeLogoffEvent($event)"
+          (mudarAbaEvent)="abaPainel = $event"
+          [abaPainel]="abaPainel"></app-menu>
+
+  <div style="position:absolute; left: 270px">
+
+    <app-pagina-inicial (enviaEventoIrHome)="enviaNumero($event)" *ngIf="abaPainel === 0"></app-pagina-inicial>
+
+    <app-operacional-cadastros *ngIf="abaPainel === 1"></app-operacional-cadastros>
+    <app-operacional-lista-de-carros *ngIf="abaPainel === 2"></app-operacional-lista-de-carros>
+    <app-operacional-relatorios *ngIf="abaPainel === 3"></app-operacional-relatorios>
+
+    <app-financeiro-caixa *ngIf="abaPainel === 4"></app-financeiro-caixa>
+    <app-financeiro-precos *ngIf="abaPainel === 5"></app-financeiro-precos>
+    <app-financeiro-relatorios *ngIf="abaPainel === 6"></app-financeiro-relatorios>
+
+    <app-recursos-humanos-cadastros *ngIf="abaPainel === 7"></app-recursos-humanos-cadastros>
+    <app-recursos-humanos-relatorios *ngIf="abaPainel === 8"></app-recursos-humanos-relatorios>
+
+    <app-configuracoes *ngIf="abaPainel === 9"></app-configuracoes>
+
+  </div>
+</div>
+
+<div *ngIf="!loginFeito" style="background-color: #363535; height: 760px; color: white;">
+  <app-login (fazLoginEvent)="recebeLoginFeito($event)"></app-login>
+</div>
+

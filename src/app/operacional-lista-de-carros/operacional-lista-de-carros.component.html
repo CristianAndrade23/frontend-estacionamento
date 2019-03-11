@@ -1,0 +1,397 @@
+<br>
+<b><h2>Lista de Carros</h2></b><br>
+
+<div class="btn-group" role="group" aria-label="Basic example">
+  <button [class.btn-warning]="noPatioSelecionado" [class.botao-cinza]="!noPatioSelecionado"
+          (click)="mudarParaNoPatio()"
+          class="btn" style="color: white">No pátio</button>
+  <button [class.btn-warning]="todosSelecionado" [class.botao-cinza]="!todosSelecionado"
+          class="btn"
+          (click)="mudarParaTodos()"
+          style="color: white">Todos</button>
+</div><br><br><br>
+
+<button (click)="abrirModalNovaEntrada(templateModalNovaEntrada)"
+  class="btn btn-warning btn-lg botao-nova-entrada"><span class="glyphicon glyphicon-plus"></span>
+  Entrada</button><br><br>
+
+<ng-template #templateModalNovaEntrada>
+  <div class="modal-header" style="padding-bottom: 10px">
+    <label class="modal-title pull-left">Nova entrada</label>
+    <button
+      class="close pull-right"
+      aria-label="Close"
+      aria-hidden="true"
+      (click)="novaMarcaRef.hide()">
+      &times;</button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col-md-5" style="padding-bottom: 15px; position:relative; left: 10px;">
+        <label>Placa</label>
+        <input type="text" class="form-control" placeholder="Digite aqui a placa...">
+      </div>
+
+      <div class="col-md-5" style="padding-bottom: 15px; position:relative; left: 10px;">
+        <label>Modelo</label>
+        <input type="text" class="form-control" placeholder="Digite o modelo...">
+      </div>
+      </div>
+
+    </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-warning" style="color: white; position: relative; right: 45%; padding:5px"><span class="glyphicon glyphicon-plus"></span> Entrada</button>
+    <button class="btn btn-warning" style="color: white; position: relative; right: 45%; padding:5px"><span class="glyphicon glyphicon-plus"></span> Saída</button>
+  </div>
+</ng-template>
+
+
+<div *ngIf="noPatioSelecionado" class="table-responsive" style="width: 1130px; position: relative; left: 20px;">
+<table class="table table-hover">
+
+<thead class="thead-dark">
+<th>Placa</th>
+<th>Entrada</th>
+<th>Saída</th>
+<th>Regime</th>
+<th>Valor</th>
+<th style="width: 124px;">Marcar Saída</th>
+</thead>
+
+<tbody>
+
+<tr>
+<td>OFJ - 9738</td>
+<td>11h00 </td>
+<td>11h27 </td>
+<td>15min - 30min </td>
+<td>R$10,00</td>
+<!--<td><span class="glyphicon glyphicon-pencil"-->
+<!--aria-hidden="true"></span>-->
+<!--</td>-->
+<!--<td><span class="glyphicon glyphicon-trash"-->
+<!--aria-hidden="true"></span>-->
+<td><button class="btn btn-success">Marcar Saída</button>
+</td>
+</tr>
+
+<tr>
+<td>OFJ - 9738</td>
+<td>11h00 </td>
+<td>11h27 </td>
+<td>15min - 30min </td>
+<td>R$10,00</td>
+<!--<td><span class="glyphicon glyphicon-pencil"-->
+<!--aria-hidden="true"></span>-->
+<!--</td>-->
+<!--<td><span class="glyphicon glyphicon-trash"-->
+<!--aria-hidden="true"></span>-->
+<td><button class="btn btn btn-success">Marcar Saída</button>
+</td>
+</tr>
+
+<tr>
+<td>OFJ - 9738</td>
+<td>11h00 </td>
+<td>11h27 </td>
+<td>15min - 30min </td>
+<td>R$10,00</td>
+<!--<td><span class="glyphicon glyphicon-pencil"-->
+<!--aria-hidden="true"></span>-->
+<!--</td>-->
+<!--<td><span class="glyphicon glyphicon-trash"-->
+<!--aria-hidden="true"></span>-->
+<td><button class="btn btn btn-success">Marcar Saída</button>
+</td>
+</tr>
+
+<tr>
+  <td>OFJ - 9738</td>
+  <td>11h00 </td>
+  <td>11h27 </td>
+  <td>15min - 30min </td>
+  <td>R$10,00</td>
+  <!--<td><span class="glyphicon glyphicon-pencil"-->
+  <!--aria-hidden="true"></span>-->
+  <!--</td>-->
+  <!--<td><span class="glyphicon glyphicon-trash"-->
+  <!--aria-hidden="true"></span>-->
+  <td><button class="btn btn btn-success">Marcar Saída</button>
+  </td>
+</tr>
+
+<tr>
+  <td>OFJ - 9738</td>
+  <td>11h00 </td>
+  <td>11h27 </td>
+  <td>15min - 30min </td>
+  <td>R$10,00</td>
+  <!--<td><span class="glyphicon glyphicon-pencil"-->
+  <!--aria-hidden="true"></span>-->
+  <!--</td>-->
+  <!--<td><span class="glyphicon glyphicon-trash"-->
+  <!--aria-hidden="true"></span>-->
+  <td><button class="btn btn btn-success">Marcar Saída</button>
+  </td>
+</tr>
+
+<tr>
+  <td>OFJ - 9738</td>
+  <td>11h00 </td>
+  <td>11h27 </td>
+  <td>15min - 30min </td>
+  <td>R$10,00</td>
+  <!--<td><span class="glyphicon glyphicon-pencil"-->
+  <!--aria-hidden="true"></span>-->
+  <!--</td>-->
+  <!--<td><span class="glyphicon glyphicon-trash"-->
+  <!--aria-hidden="true"></span>-->
+  <td><button class="btn btn btn-success">Marcar Saída</button>
+  </td>
+</tr>
+
+<tr>
+  <td>OFJ - 9738</td>
+  <td>11h00 </td>
+  <td>11h27 </td>
+  <td>15min - 30min </td>
+  <td>R$10,00</td>
+  <!--<td><span class="glyphicon glyphicon-pencil"-->
+  <!--aria-hidden="true"></span>-->
+  <!--</td>-->
+  <!--<td><span class="glyphicon glyphicon-trash"-->
+  <!--aria-hidden="true"></span>-->
+  <td><button class="btn btn btn-success">Marcar Saída</button>
+  </td>
+</tr>
+
+<tr>
+  <td>OFJ - 9738</td>
+  <td>11h00 </td>
+  <td>11h27 </td>
+  <td>15min - 30min </td>
+  <td>R$10,00</td>
+  <!--<td><span class="glyphicon glyphicon-pencil"-->
+  <!--aria-hidden="true"></span>-->
+  <!--</td>-->
+  <!--<td><span class="glyphicon glyphicon-trash"-->
+  <!--aria-hidden="true"></span>-->
+  <td><button class="btn btn btn-success">Marcar Saída</button>
+  </td>
+</tr>
+
+<tr>
+  <td>OFJ - 9738</td>
+  <td>11h00 </td>
+  <td>11h27 </td>
+  <td>15min - 30min </td>
+  <td>R$10,00</td>
+  <!--<td><span class="glyphicon glyphicon-pencil"-->
+  <!--aria-hidden="true"></span>-->
+  <!--</td>-->
+  <!--<td><span class="glyphicon glyphicon-trash"-->
+  <!--aria-hidden="true"></span>-->
+  <td><button class="btn btn btn-success">Marcar Saída</button>
+  </td>
+</tr>
+
+<tr>
+  <td>OFJ - 9738</td>
+  <td>11h00 </td>
+  <td>11h27 </td>
+  <td>15min - 30min </td>
+  <td>R$10,00</td>
+  <!--<td><span class="glyphicon glyphicon-pencil"-->
+  <!--aria-hidden="true"></span>-->
+  <!--</td>-->
+  <!--<td><span class="glyphicon glyphicon-trash"-->
+  <!--aria-hidden="true"></span>-->
+  <td><button class="btn btn btn-success">Marcar Saída</button>
+  </td>
+</tr>
+
+<tr>
+  <td>OFJ - 9738</td>
+  <td>11h00 </td>
+  <td>11h27 </td>
+  <td>15min - 30min </td>
+  <td>R$10,00</td>
+  <!--<td><span class="glyphicon glyphicon-pencil"-->
+  <!--aria-hidden="true"></span>-->
+  <!--</td>-->
+  <!--<td><span class="glyphicon glyphicon-trash"-->
+  <!--aria-hidden="true"></span>-->
+  <td><button class="btn btn btn-success">Marcar Saída</button>
+  </td>
+</tr>
+
+<tr>
+  <td>OFJ - 9738</td>
+  <td>11h00 </td>
+  <td>11h27 </td>
+  <td>15min - 30min </td>
+  <td>R$10,00</td>
+  <!--<td><span class="glyphicon glyphicon-pencil"-->
+  <!--aria-hidden="true"></span>-->
+  <!--</td>-->
+  <!--<td><span class="glyphicon glyphicon-trash"-->
+  <!--aria-hidden="true"></span>-->
+  <td><button class="btn btn btn-success">Marcar Saída</button>
+  </td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div *ngIf="todosSelecionado" class="table-responsive" style="width: 1130px; position: relative; left: 20px;">
+  <table class="table table-hover">
+
+    <thead class="thead-dark">
+    <th>Placa</th>
+    <th>Entrada</th>
+    <th>Saída</th>
+    <th>Regime</th>
+    <th>Valor</th>
+    </thead>
+
+    <tbody>
+
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+
+    <tr>
+      <td>OFJ - 9738</td>
+      <td>11h00 </td>
+      <td>11h27 </td>
+      <td>15min - 30min </td>
+      <td>R$10,00</td>
+    </tr>
+
+
+
+
+
+
+
+    </tbody>
+
+  </table>
+
+</div>

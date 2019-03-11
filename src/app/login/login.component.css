@@ -1,0 +1,9 @@
+.bloco-login-centro{
+  position: relative;
+  left: 43%;
+  top: 195px;
+  width: 222px;
+  padding: 30px;
+  border-radius: 5%;
+  border: solid 1px #848080;
+}

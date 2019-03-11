@@ -1,0 +1,203 @@
+<br>
+<b><h2>Cadastros</h2></b><br>
+
+<div class="position-div-marcas">
+<h3>Marcas</h3><br>
+
+  <button (click)="abrirModalNovaMarca(templateNovaMarca)"
+  class="btn btn-warning" style="color: white;
+                                       padding-right: 15px;
+                                       padding-left: 15px;
+                                       font-weight: bold;
+                                       font-size: 12px;
+                                       position: relative;
+                                       left: 50px;"><span class="glyphicon glyphicon-plus"></span> Nova marca</button><br><br>
+
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead class="thead-dark">
+    <tr>
+      <th style="width: 115px">Marca</th>
+      <th>Editar</th>
+      <th>Excluir</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+      <td>Marca 01</td>
+      <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+      <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+    </tr>
+
+    <tr>
+      <td>Marca 02</td>
+      <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+      <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+    </tr>
+
+    <tr>
+      <td>Marca 03</td>
+      <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+      <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+    </tr>
+
+    <tr>
+      <td>Marca 04</td>
+      <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+      <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+    </tr>
+
+    <tr>
+      <td>Marca 05</td>
+      <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+      <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+    </tr>
+
+    <tr>
+      <td>Marca 06</td>
+      <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+      <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+    </tr>
+
+    </tbody>
+  </table>
+</div>
+</div>
+
+<ng-template #templateNovaMarca>
+  <div class="modal-header" style="padding-bottom: 10px">
+    <label class="modal-title pull-left"> Cadastrar nova função</label>
+    <button
+      class="close pull-right"
+      aria-label="Close"
+      aria-hidden="true"
+      (click)="novaMarcaRef.hide()">
+      &times;</button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col-md-7" style="padding-bottom: 15px; position:relative; left: 10px;">
+        <label>Nome da marca</label>
+        <input type="text" class="form-control" placeholder="Digite o nome da função...">
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-warning" style="color: white; position: relative; right: 45%;">Cadastrar</button>
+  </div>
+</ng-template>
+
+
+<div class="position-div-modelos">
+<h3>Modelos</h3><br>
+
+  <button (click)="abrirModalNovoModelo(templateModalNovoModelo)"
+    class="btn btn-warning" style="color: white;
+                                       padding-right: 15px;
+                                       padding-left: 15px;
+                                       font-weight: bold;
+                                       font-size: 12px;
+                                       position: relative;
+                                       left: 50px;"><span class="glyphicon glyphicon-plus"></span> Novo modelo</button><br><br>
+
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead class="thead-dark">
+      <tr>
+        <th style="width: 115px">Modelo</th>
+        <th>Editar</th>
+        <th>Excluir</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr>
+        <td>Modelo 01</td>
+        <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+        <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+      </tr>
+
+      <tr>
+        <td>Modelo 02</td>
+        <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+        <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+      </tr>
+
+      <tr>
+        <td>Modelo 03</td>
+        <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+        <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+      </tr>
+
+      <tr>
+        <td>Modelo 04</td>
+        <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+        <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+      </tr>
+
+      <tr>
+        <td>Modelo 05</td>
+        <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+        <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+      </tr>
+
+      <tr>
+        <td>Modelo 06</td>
+        <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+        <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<ng-template #templateModalNovoModelo>
+  <div class="modal-header" style="padding-bottom: 10px">
+    <label class="modal-title pull-left"> Cadastrar novo modelo</label>
+    <button
+      class="close pull-right"
+      aria-label="Close"
+      aria-hidden="true"
+      (click)="novaMarcaRef.hide()">
+      &times;</button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col-md-7" style="padding-bottom: 15px; position:relative; left: 10px;">
+        <label>Nome da marca</label>
+        <input type="text" class="form-control" placeholder="Digite o nome da marca...">
+      </div>
+
+      <div class="col-md-7" style="padding-bottom: 15px; position:relative; left: 10px;">
+        <label>Nome do modelo</label>
+        <input type="text" class="form-control" placeholder="Digite o nome do modelo...">
+      </div>
+
+      <div class="col-md-7" style="padding-bottom: 15px; position:relative; left: 10px;">
+        <label>Tipo do veículo</label>
+        <select
+          type="text"
+          class="form-control">
+          <option>Carro</option>
+          <option>Moto</option>
+          <option>Caminhão</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-warning" style="color: white; position: relative; right: 45%;">Cadastrar</button>
+  </div>
+</ng-template>

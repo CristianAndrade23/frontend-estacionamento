@@ -1,0 +1,18 @@
+h2{
+  font-weight: bold;
+}
+
+button{
+  color: white;
+}
+
+.botao-cinza{
+  background-color: #d6d6d6;
+}
+.botao-nova-entrada{
+  color: white;
+  padding: 8px;
+  width: 120px;
+  position: relative;
+  left: 20px;
+}

@@ -1,0 +1,15 @@
+h2{
+  font-weight: bold;
+}
+.position-div-marcas{
+  position: relative;
+  left: 40px;
+  top: 30px;
+}
+
+.position-div-modelos{
+  position: absolute;
+  top: 88px;
+  left: 500px;
+  width: 210px;
+}

@@ -1,0 +1,182 @@
+<br>
+<b><h2>Cadastros</h2></b><br>
+
+<div class="position-div-marcas">
+  <h3>Funções</h3><br>
+
+  <button (click)="abrirModalNovaFuncao(templateNovaFuncao)"
+          class="btn btn-warning" style="color: white;
+                                       padding-right: 15px;
+                                       padding-left: 15px;
+                                       font-weight: bold;
+                                       font-size: 12px;
+                                       position: relative;
+                                       left: 50px;"><span class="glyphicon glyphicon-plus"></span> Nova função</button><br><br>
+
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead class="thead-dark">
+      <tr>
+        <th style="width: 115px">Função</th>
+        <th>Editar</th>
+        <th>Excluir</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr>
+        <td>Função 01</td>
+        <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+        <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+      </tr>
+
+      <tr>
+        <td>Função 02</td>
+        <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+        <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+      </tr>
+
+      <tr>
+        <td>Função 03</td>
+        <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+        <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+      </tr>
+
+      <tr>
+        <td>Função 04</td>
+        <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+        <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+      </tr>
+
+      <tr>
+        <td>Marca 05</td>
+        <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+        <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+      </tr>
+
+      <tr>
+        <td>Função 06</td>
+        <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+        <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<ng-template #templateNovaFuncao>
+  <div class="modal-header" style="padding-bottom: 10px">
+    <label class="modal-title pull-left"> Cadastrar nova função</label>
+    <button
+      class="close pull-right"
+      aria-label="Close"
+      aria-hidden="true"
+      (click)="novaFuncaoRef.hide()">
+      &times;</button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col-md-7" style="padding-bottom: 15px; position:relative; left: 10px;">
+        <label>Nome da função</label>
+        <input type="text" class="form-control" placeholder="Digite o nome da função...">
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-warning" style="color: white; position: relative; right: 45%;">Cadastrar</button>
+  </div>
+</ng-template>
+
+
+<div class="position-div-modelos">
+  <h3>Funcionário</h3><br>
+
+  <button (click)="abrirModalNovoFuncionario(templateModalNovoFuncionario)"
+          class="btn btn-warning" style="color: white;
+                                       padding-right: 15px;
+                                       padding-left: 15px;
+                                       font-weight: bold;
+                                       font-size: 12px;
+                                       position: relative;
+                                       left: 50px;"><span class="glyphicon glyphicon-plus"></span> Novo funcionário</button><br><br>
+
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead class="thead-dark">
+      <tr>
+        <th>CPF</th>
+        <th>Nome</th>
+        <th>Data de nascimento</th>
+        <th>Função</th>
+        <th>Editar</th>
+        <th>Excluir</th>
+      </tr>
+      </thead>
+
+      <tbody>
+
+      <tr>
+        <td>038.938.013-55</td>
+        <td>Ademir da Silva</td>
+        <td>23/08/1983</td>
+        <td>Auxiliar</td>
+        <td><button class="btn"><span class="glyphicon glyphicon-pencil"></span></button></td>
+        <td><button class="btn"><span class="glyphicon glyphicon-trash"></span></button></td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<ng-template #templateModalNovoFuncionario>
+  <div class="modal-header" style="padding-bottom: 10px">
+    <label class="modal-title pull-left"> Cadastrar novo funcionário</label>
+    <button
+      class="close pull-right"
+      aria-label="Close"
+      aria-hidden="true"
+      (click)="novoFuncionarioRef.hide()">
+      &times;</button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col-md-5" style="padding-bottom: 15px; position:relative; left: 10px;">
+        <label>CPF</label>
+        <input type="text" class="form-control" placeholder="Digite o CPF...">
+      </div>
+
+      <div class="col-md-5" style="padding-bottom: 15px; position:relative; left: 10px;">
+        <label>Nome do funcionário</label>
+        <input type="text" class="form-control" placeholder="Digite o nome do funcionário...">
+      </div>
+    </div>
+
+    <div class="row">
+
+      <div class="col-md-5" style="padding-bottom: 15px; position:relative; left: 10px;">
+        <label>Data de nascimento</label>
+        <input type="text" class="form-control" placeholder="Digite a data de nascimento...">
+      </div>
+
+      <div class="col-md-5" style="padding-bottom: 15px; position:relative; left: 10px;">
+        <label>Função</label>
+        <input type="text" class="form-control" placeholder="Digite a função...">
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-warning" style="color: white; position: relative; right: 45%;">Cadastrar</button>
+  </div>
+</ng-template>

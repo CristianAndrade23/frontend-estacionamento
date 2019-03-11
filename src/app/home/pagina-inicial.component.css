@@ -1,0 +1,10 @@
+h2{
+  font-weight: bold;
+}
+
+.alinha-conteudo-centro{
+  position: relative;
+  left: 157%;
+  top: 25px;
+  width: 184px;
+}

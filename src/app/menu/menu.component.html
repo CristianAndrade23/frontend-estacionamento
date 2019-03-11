@@ -1,0 +1,61 @@
+<div class="menu">
+
+  <div class="logo-text-menu">
+    <strong (click)="mudarAba(0)">LOGO</strong>
+  </div>
+
+  <div class="itens-menu">
+
+    <span [class.selecionado]="abaPainel === 0" (click)="mudarAba(0)">
+      <span class="glyphicon glyphicon-home espaço-icone"></span> Home</span><br><br>
+
+    <span [class.selecionado]="abaPainel === 1 || abaPainel === 2 || abaPainel === 3 "
+          (click)="abrirOpcoesOperacional()">
+      <span class="glyphicon glyphicon-road espaço-icone"></span> Operacional
+      <span *ngIf="mostrarOpcoesOperacional" class=" glyphicon glyphicon-chevron-down" style="margin-left: 5px;"></span><br>
+      </span>
+
+      <div *ngIf="mostrarOpcoesOperacional" style="right: -15px; position: relative;">
+      <br>
+      <span [class.selecionado]="abaPainel === 1" (click)="mudarAba(1)">Cadastros</span><br><br>
+      <span [class.selecionado]="abaPainel === 2" (click)="mudarAba(2)">Lista de carros</span><br><br>
+      <span [class.selecionado]="abaPainel === 3" (click)="mudarAba(3)">Relatórios</span><br>
+    </div>
+    <br>
+
+    <span [class.selecionado]="abaPainel === 4 || abaPainel === 5 || abaPainel === 6 "
+          (click)="abrirOpcoesFinanceiro()">
+      <span class="glyphicon glyphicon-usd espaço-icone"></span> Financeiro
+      <span *ngIf="mostrarOpcoesFinanceiro" class=" glyphicon glyphicon-chevron-down" style="margin-left: 5px;"></span><br>
+      </span>
+
+    <div *ngIf="mostrarOpcoesFinanceiro" style="right: -15px; position: relative;">
+      <br>
+      <span [class.selecionado]="abaPainel === 4" (click)="mudarAba(4)">Caixa</span><br><br>
+      <span [class.selecionado]="abaPainel === 5" (click)="mudarAba(5)">Preços</span><br><br>
+      <span [class.selecionado]="abaPainel === 6" (click)="mudarAba(6)">Relatórios</span><br>
+    </div>
+    <br>
+
+    <span [class.selecionado]="abaPainel === 7 || abaPainel === 8 "
+          (click)="abrirOpcoesRH()">
+      <span class="glyphicon glyphicon-user espaço-icone"></span> Recursos Humanos
+      <span *ngIf="mostrarOpcoesRH" class="glyphicon glyphicon-chevron-down" style="margin-left: 5px;"></span><br>
+      </span>
+
+    <div *ngIf="mostrarOpcoesRH" style="right: -15px; position: relative;">
+      <br>
+      <span [class.selecionado]="abaPainel === 7" (click)="mudarAba(7)">Cadastros</span><br><br>
+      <span [class.selecionado]="abaPainel === 8" (click)="mudarAba(8)">Relatórios</span><br><br>
+    </div>
+    <br>
+
+    <span [class.selecionado]="abaPainel === 9" (click)="mudarAba(9)">
+      <span class="glyphicon glyphicon-cog espaço-icone"></span> Configurações</span><br><br>
+
+    <span (click)="fazerLogOff()">
+      <span class="glyphicon glyphicon-off espaço-icone"></span> Sair</span><br><br>
+
+  </div>
+
+</div>
