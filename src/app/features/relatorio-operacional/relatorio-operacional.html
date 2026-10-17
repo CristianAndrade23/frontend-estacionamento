@@ -1,0 +1,119 @@
+<header class="page-header">
+  <div>
+    <h1>Relatório operacional</h1>
+    <p class="text-muted">Movimento do pátio pelas entradas no período.</p>
+  </div>
+</header>
+
+<app-period-filter [(periodo)]="periodo" />
+
+@if (relatorio.error()) {
+  <div class="alert alert--danger">
+    <app-icon name="alert" />
+    Não foi possível carregar o relatório.
+    <button type="button" class="link" (click)="relatorio.reload()">Tentar novamente</button>
+  </div>
+} @else if (!relatorio.hasValue()) {
+  <div class="kpi-grid">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <div class="kpi card skeleton"></div>
+    }
+  </div>
+} @else {
+  @let r = relatorio.value();
+  <div [class.is-refreshing]="relatorio.isLoading()">
+    <div class="kpi-grid">
+      <div class="kpi card kpi--info">
+        <span class="kpi__icon"><app-icon name="log-in" [size]="20" /></span>
+        <span class="kpi__label">Entradas</span>
+        <strong class="kpi__value">{{ numero(r.entradas) }}</strong>
+        <span class="kpi__hint">média de {{ numero(mediaDiaria()) }} por dia</span>
+      </div>
+      <div class="kpi card kpi--success">
+        <span class="kpi__icon"><app-icon name="logout" [size]="20" /></span>
+        <span class="kpi__label">Saídas concluídas</span>
+        <strong class="kpi__value">{{ numero(r.finalizadas) }}</strong>
+        <span class="kpi__hint">{{ numero(r.entradas - r.finalizadas) }} ainda no pátio</span>
+      </div>
+      <div class="kpi card kpi--warning">
+        <span class="kpi__icon"><app-icon name="clock" [size]="20" /></span>
+        <span class="kpi__label">Permanência média</span>
+        <strong class="kpi__value">{{ duracao(r.permanenciaMediaMinutos) }}</strong>
+        <span class="kpi__hint">dos veículos que já saíram</span>
+      </div>
+      <div class="kpi card">
+        <span class="kpi__icon"><app-icon name="chart" [size]="20" /></span>
+        <span class="kpi__label">Horário de pico</span>
+        <strong class="kpi__value">{{ pico() }}</strong>
+        <span class="kpi__hint">hora com mais entradas</span>
+      </div>
+    </div>
+
+    <div class="stack">
+      <section class="card">
+        <header class="card__header"><h2>Entradas por dia</h2></header>
+        <div class="card__body">
+          <app-bar-chart caption="Entradas por dia" [data]="porDia()" [labelEvery]="labelEvery()" />
+        </div>
+      </section>
+
+      <div class="grid-2">
+        <section class="card">
+          <header class="card__header"><h2>Entradas por horário</h2></header>
+          <div class="card__body">
+            <app-bar-chart
+              caption="Entradas por horário"
+              [data]="porHora()"
+              [labelEvery]="3"
+              [height]="160"
+            />
+          </div>
+        </section>
+        <section class="card">
+          <header class="card__header"><h2>Por tipo de veículo</h2></header>
+          <div class="card__body">
+            <app-bar-chart
+              caption="Entradas por tipo de veículo"
+              orientation="horizontal"
+              [data]="porTipo()"
+            />
+          </div>
+        </section>
+      </div>
+
+      <section class="card">
+        <header class="card__header"><h2>Modelos mais frequentes</h2></header>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Modelo</th>
+                <th>Tipo</th>
+                <th class="num">Entradas</th>
+                <th class="num">Participação</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (m of r.modelos; track m.modelo + m.marca; let i = $index) {
+                <tr>
+                  <td class="text-muted">{{ i + 1 }}</td>
+                  <td class="strong">{{ m.marca }} {{ m.modelo }}</td>
+                  <td>
+                    <span class="badge">{{ tipo(m.tipo) }}</span>
+                  </td>
+                  <td class="num">{{ numero(m.quantidade) }}</td>
+                  <td class="num">{{ percentual(m.quantidade, r.entradas) }}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="5" class="empty-state">Sem entradas no período.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+}

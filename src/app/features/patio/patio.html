@@ -1,0 +1,184 @@
+<header class="page-header">
+  <div>
+    <h1>Pátio</h1>
+    <p class="text-muted">
+      @if (resumo.value(); as r) {
+        {{ r.ocupadas }} veículos no pátio · {{ r.livres }} de {{ r.vagas }} vagas livres
+      } @else {
+        Entradas, saídas e histórico de veículos.
+      }
+    </p>
+  </div>
+  <button type="button" class="btn btn--primary" [disabled]="lotado()" (click)="abrirEntrada()">
+    <app-icon name="log-in" />
+    {{ lotado() ? 'Estacionamento lotado' : 'Registrar entrada' }}
+  </button>
+</header>
+
+@if (resumo.hasValue() && !caixaAberto()) {
+  <div class="alert alert--warning">
+    <app-icon name="lock" />
+    O caixa está fechado: entradas continuam liberadas, mas as saídas só podem ser registradas com o caixa
+    aberto.
+  </div>
+}
+
+<section class="card">
+  <div class="toolbar">
+    <div class="segmented" role="tablist" aria-label="Situação">
+      <button
+        type="button"
+        role="tab"
+        [class.is-active]="situacao() === 'PATIO'"
+        [attr.aria-selected]="situacao() === 'PATIO'"
+        (click)="situacao.set('PATIO')"
+      >
+        No pátio
+        @if (resumo.value(); as r) {
+          <span class="segmented__count">{{ r.ocupadas }}</span>
+        }
+      </button>
+      <button
+        type="button"
+        role="tab"
+        [class.is-active]="situacao() === 'TODAS'"
+        [attr.aria-selected]="situacao() === 'TODAS'"
+        (click)="situacao.set('TODAS')"
+      >
+        Histórico
+      </button>
+    </div>
+    <label class="search">
+      <app-icon name="search" [size]="16" />
+      <input
+        class="input"
+        type="search"
+        aria-label="Buscar placa"
+        placeholder="Buscar placa…"
+        [value]="busca()"
+        (input)="busca.set($any($event.target).value)"
+      />
+    </label>
+  </div>
+
+  @if (lista.error()) {
+    <div class="empty-state">
+      Erro ao carregar as movimentações.
+      <button type="button" class="link" (click)="lista.reload()">Tentar novamente</button>
+    </div>
+  } @else if (!lista.hasValue()) {
+    <div class="empty-state">Carregando…</div>
+  } @else {
+    @let resultado = lista.value();
+    <div class="table-wrap" [class.is-refreshing]="lista.isLoading()">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Placa</th>
+            <th>Veículo</th>
+            <th>Entrada</th>
+            @if (situacao() === 'TODAS') {
+              <th>Saída</th>
+            }
+            <th>Permanência</th>
+            <th class="num">{{ situacao() === 'PATIO' ? 'Valor até agora' : 'Valor' }}</th>
+            @if (situacao() === 'PATIO') {
+              <th class="center">Ação</th>
+            } @else {
+              <th>Pagamento</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (m of resultado.itens; track m.id) {
+            <tr>
+              <td>
+                <span class="plate">{{ placa(m.placa) }}</span>
+              </td>
+              <td>
+                {{ m.modelo.marca }} {{ m.modelo.nome }}
+                <span class="table__sub">{{ tipo(m.modelo.tipo) }}</span>
+              </td>
+              <td>{{ m.entrada | date: 'dd/MM HH:mm' }}</td>
+              @if (situacao() === 'TODAS') {
+                <td>
+                  @if (m.saida) {
+                    {{ m.saida | date: 'dd/MM HH:mm' }}
+                  } @else {
+                    <span class="badge badge--info">No pátio</span>
+                  }
+                </td>
+              }
+              <td>
+                {{ duracao(m.permanenciaMinutos) }}
+                <span class="table__sub">{{ m.regime }}</span>
+              </td>
+              <td class="num strong">{{ m.valor | currency: 'BRL' }}</td>
+              @if (situacao() === 'PATIO') {
+                <td class="center">
+                  <button
+                    type="button"
+                    class="btn btn--sm btn--success"
+                    [attr.aria-label]="'Registrar saída de ' + placa(m.placa)"
+                    (click)="abrirSaida(m)"
+                  >
+                    <app-icon name="logout" [size]="16" />
+                    Saída
+                  </button>
+                </td>
+              } @else {
+                <td>
+                  @if (m.formaPagamento) {
+                    {{ forma(m.formaPagamento) }}
+                    <span class="table__sub">{{ m.finalizadaPor }}</span>
+                  } @else {
+                    —
+                  }
+                </td>
+              }
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="empty-state">
+                {{ busca() ? 'Nenhum veículo com essa placa.' : 'Nenhum veículo no pátio.' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <app-paginator [total]="resultado.total" [pageSize]="tamanho" [(page)]="pagina" />
+  }
+</section>
+
+<app-modal title="Registrar entrada" [(open)]="entradaAberta">
+  <app-entrada-form [erro]="erro()" (enviado)="registrarEntrada($event)" />
+  <div modal-footer>
+    <button type="button" class="btn btn--ghost" (click)="entradaAberta.set(false)">Cancelar</button>
+    <button type="submit" form="entrada-form" class="btn btn--primary" [disabled]="salvando()">
+      {{ salvando() ? 'Registrando…' : 'Registrar entrada' }}
+    </button>
+  </div>
+</app-modal>
+
+<app-modal title="Registrar saída" [open]="saindo() !== null" (openChange)="!$event && saindo.set(null)">
+  @if (saindo(); as m) {
+    <app-saida-form
+      [movimentacaoId]="m.id"
+      [caixaAberto]="caixaAberto()"
+      [erro]="erro()"
+      (enviado)="registrarSaida($event)"
+    />
+  }
+  <div modal-footer>
+    <button type="button" class="btn btn--ghost" (click)="saindo.set(null)">Cancelar</button>
+    <button
+      type="submit"
+      form="saida-form"
+      class="btn btn--success"
+      [disabled]="salvando() || !caixaAberto()"
+    >
+      {{ salvando() ? 'Registrando…' : 'Confirmar pagamento e saída' }}
+    </button>
+  </div>
+</app-modal>

@@ -1,0 +1,130 @@
+<header class="page-header">
+  <div>
+    <h1>Preços</h1>
+    <p class="text-muted">
+      A primeira hora é cobrada em faixas de 15 minutos; depois disso, cada hora iniciada soma a hora
+      adicional.
+    </p>
+  </div>
+</header>
+
+<section class="card">
+  @if (precos.error()) {
+    <div class="empty-state">
+      Erro ao carregar os preços.
+      <button type="button" class="link" (click)="precos.reload()">Tentar novamente</button>
+    </div>
+  } @else if (!precos.hasValue()) {
+    <div class="empty-state">Carregando…</div>
+  } @else {
+    <div class="table-wrap">
+      <table class="table" aria-label="Tabela de preços">
+        <thead>
+          <tr>
+            <th>Veículo</th>
+            <th class="num">Até 15 min</th>
+            <th class="num">15 a 30 min</th>
+            <th class="num">30 a 45 min</th>
+            <th class="num">45 min a 1 h</th>
+            <th class="num">Hora adicional</th>
+            @if (session.isAdmin()) {
+              <th class="center">Editar</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of precos.value(); track p.tipo) {
+            <tr>
+              <td class="strong">{{ tipo(p.tipo) }}</td>
+              <td class="num">{{ p.ate15 | currency: 'BRL' }}</td>
+              <td class="num">{{ p.ate30 | currency: 'BRL' }}</td>
+              <td class="num">{{ p.ate45 | currency: 'BRL' }}</td>
+              <td class="num">{{ p.ate60 | currency: 'BRL' }}</td>
+              <td class="num">+ {{ p.horaAdicional | currency: 'BRL' }}</td>
+              @if (session.isAdmin()) {
+                <td class="center">
+                  <button
+                    type="button"
+                    class="btn-icon"
+                    [attr.aria-label]="'Editar preços de ' + tipo(p.tipo)"
+                    (click)="editar(p)"
+                  >
+                    <app-icon name="pencil" [size]="16" />
+                  </button>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    @if (!session.isAdmin()) {
+      <p class="card__body text-muted no-margin">
+        <app-icon name="lock" [size]="14" /> Apenas o administrador pode alterar os preços.
+      </p>
+    }
+  }
+</section>
+
+<section class="card simulador">
+  <header class="card__header">
+    <h2><app-icon name="calculator" /> Simulador</h2>
+  </header>
+  <div class="card__body simulador__body">
+    <div class="form-grid form-grid--3">
+      <label class="field">
+        <span class="field__label">Veículo</span>
+        <select class="input" name="sim-tipo" (change)="simTipo.set($any($event.target).value)">
+          @for (t of tipos; track t.valor) {
+            <option [value]="t.valor" [selected]="t.valor === simTipo()">{{ t.nome }}</option>
+          }
+        </select>
+      </label>
+      <label class="field">
+        <span class="field__label">Horas</span>
+        <input
+          class="input"
+          type="number"
+          min="0"
+          name="sim-horas"
+          [value]="simHoras()"
+          (input)="simHoras.set($any($event.target).value)"
+        />
+      </label>
+      <label class="field">
+        <span class="field__label">Minutos</span>
+        <input
+          class="input"
+          type="number"
+          min="0"
+          max="59"
+          name="sim-minutos"
+          [value]="simMinutos()"
+          (input)="simMinutos.set($any($event.target).value)"
+        />
+      </label>
+    </div>
+    @if (simulacao(); as s) {
+      <div class="simulador__resultado" aria-live="polite">
+        <span class="text-muted">{{ duracao(s.minutos) }} · {{ s.regime }}</span>
+        <strong data-testid="valor-simulado">{{ s.valor | currency: 'BRL' }}</strong>
+      </div>
+    }
+  </div>
+</section>
+
+<app-modal
+  [title]="'Preços de ' + (editando() ? tipo(editando()!.tipo).toLowerCase() : '')"
+  [open]="editando() !== null"
+  (openChange)="!$event && editando.set(null)"
+>
+  @if (editando(); as p) {
+    <app-preco-form [preco]="p" [erro]="erro()" (enviado)="salvar($event)" />
+  }
+  <div modal-footer>
+    <button type="button" class="btn btn--ghost" (click)="editando.set(null)">Cancelar</button>
+    <button type="submit" form="preco-form" class="btn btn--primary" [disabled]="salvando()">
+      {{ salvando() ? 'Salvando…' : 'Salvar preços' }}
+    </button>
+  </div>
+</app-modal>

@@ -1,0 +1,19 @@
+.kpi--hero {
+  gap: 8px;
+}
+
+.kpi--hero .kpi__value {
+  font-size: 34px;
+}
+
+.kpi--hero .kpi__value small {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.kpi--hero .kpi__hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}

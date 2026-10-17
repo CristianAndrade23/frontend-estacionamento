@@ -1,0 +1,186 @@
+.chart {
+  margin: 0;
+}
+
+/* ---------- vertical ---------- */
+.chart__plot {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  padding-top: 18px;
+}
+.chart__axis {
+  position: relative;
+  min-width: 34px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.chart__axis span {
+  position: absolute;
+  right: 0;
+  transform: translateY(50%);
+  white-space: nowrap;
+}
+.chart__area {
+  position: relative;
+}
+.chart__grid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--grid);
+}
+.chart__columns {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+}
+.chart__slot {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  outline: none;
+  cursor: default;
+}
+.chart__col {
+  width: min(24px, 100%);
+  min-height: 1px;
+  border-radius: 4px 4px 0 0;
+  background: var(--chart);
+  transition: background 0.12s;
+}
+.chart__slot:hover .chart__col,
+.chart__slot:focus-visible .chart__col {
+  background: var(--chart-hover);
+}
+.chart__slot:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--primary);
+  border-radius: 4px;
+}
+.chart__peak {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -4px);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.chart__tip {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  z-index: 5;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.chart__tip strong {
+  font-size: 14px;
+  color: var(--text);
+}
+.chart__slot:hover .chart__tip,
+.chart__slot:focus-visible .chart__tip {
+  display: flex;
+}
+.chart__labels {
+  display: flex;
+  gap: 2px;
+  margin: 6px 0 0 42px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.chart__labels span {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: visible;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ---------- horizontal ---------- */
+.chart__rows {
+  display: grid;
+  gap: 10px;
+}
+.chart__row {
+  display: grid;
+  grid-template-columns: minmax(80px, 120px) 1fr auto;
+  align-items: center;
+  gap: 12px;
+  border-radius: 4px;
+}
+.chart__row:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.chart__row-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+.chart__track {
+  height: 20px;
+}
+.chart__bar {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  border-radius: 0 4px 4px 0;
+  background: var(--chart);
+}
+.chart__row:hover .chart__bar {
+  background: var(--chart-hover);
+}
+.chart__row-value {
+  min-width: 90px;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.chart__row-value small {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+/* ---------- tabela ---------- */
+.chart__table {
+  margin-top: 12px;
+  font-size: 13px;
+}
+.chart__table summary {
+  width: fit-content;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.chart__table table {
+  margin-top: 8px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
