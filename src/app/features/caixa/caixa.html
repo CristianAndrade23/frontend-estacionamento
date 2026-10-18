@@ -1,0 +1,202 @@
+<header class="page-header">
+  <div>
+    <h1>Caixa</h1>
+    <p class="text-muted">Abertura e fechamento do turno e o que foi recebido em cada forma de pagamento.</p>
+  </div>
+</header>
+
+@if (atual.error()) {
+  <div class="alert alert--danger">
+    <app-icon name="alert" />
+    Não foi possível carregar o caixa.
+    <button type="button" class="link" (click)="atual.reload()">Tentar novamente</button>
+  </div>
+} @else if (!atual.hasValue() && atual.isLoading()) {
+  <div class="card skeleton"></div>
+} @else {
+  @if (atual.value(); as caixa) {
+    <section class="card">
+      <header class="card__header">
+        <h2>
+          Caixa aberto
+          <span class="badge badge--ok"><app-icon name="unlock" [size]="14" /> há {{ abertoHa() }}</span>
+        </h2>
+        <button type="button" class="btn btn--danger" (click)="fechando.set(true)">
+          <app-icon name="lock" />
+          Fechar caixa
+        </button>
+      </header>
+      <div class="card__body grid-2">
+        <dl class="details">
+          <dt>Abertura</dt>
+          <dd>{{ caixa.abertura | date: 'dd/MM/yyyy HH:mm' }}</dd>
+          <dt>Aberto por</dt>
+          <dd>{{ caixa.abertoPor }}</dd>
+          <dt>Troco inicial</dt>
+          <dd>{{ caixa.valorInicial | currency: 'BRL' }}</dd>
+          <dt>Saídas registradas</dt>
+          <dd>{{ caixa.saidas }}</dd>
+          <dt>Total recebido</dt>
+          <dd class="caixa__total">{{ caixa.totalRecebido | currency: 'BRL' }}</dd>
+          <dt>Dinheiro na gaveta</dt>
+          <dd>{{ caixa.dinheiroEmGaveta | currency: 'BRL' }}</dd>
+        </dl>
+        <table class="table table--compact" aria-label="Recebido por forma de pagamento">
+          <thead>
+            <tr>
+              <th>Forma</th>
+              <th class="num">Saídas</th>
+              <th class="num">Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (f of caixa.porForma; track f.forma) {
+              <tr>
+                <td>{{ forma(f.forma) }}</td>
+                <td class="num">{{ f.quantidade }}</td>
+                <td class="num">{{ f.valor | currency: 'BRL' }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>Total</th>
+              <td class="num">{{ caixa.saidas }}</td>
+              <td class="num">{{ caixa.totalRecebido | currency: 'BRL' }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+  } @else {
+    <section class="card">
+      <header class="card__header">
+        <h2>
+          Caixa fechado
+          <span class="badge badge--warning"><app-icon name="lock" [size]="14" /> saídas bloqueadas</span>
+        </h2>
+      </header>
+      <div class="card__body">
+        <form class="abertura" [formRoot]="aberturaForm">
+          <app-field
+            [field]="aberturaForm.valorInicial"
+            label="Troco inicial (R$)"
+            for="troco"
+            hint="Dinheiro na gaveta no começo do turno."
+          >
+            <input
+              id="troco"
+              type="number"
+              step="0.01"
+              class="input input--money"
+              [formField]="aberturaForm.valorInicial"
+            />
+          </app-field>
+          <button type="submit" class="btn btn--primary" [disabled]="aberturaForm().submitting()">
+            <app-icon name="unlock" />
+            {{ aberturaForm().submitting() ? 'Abrindo…' : 'Abrir caixa' }}
+          </button>
+        </form>
+        @if (erro(); as message) {
+          <div class="alert alert--danger" role="alert">
+            <app-icon name="alert" />
+            {{ message }}
+          </div>
+        }
+        <p class="text-muted">
+          Com o caixa aberto, as saídas registradas no <a routerLink="/painel/patio">pátio</a> entram neste
+          turno.
+        </p>
+      </div>
+    </section>
+  }
+}
+
+<section class="card historico">
+  <header class="card__header">
+    <h2>Histórico de caixas</h2>
+  </header>
+  <div class="card__body">
+    <app-period-filter [(periodo)]="periodo" [opcoes]="['hoje', '7d', '30d', 'mes-anterior']" inicial="7d" />
+  </div>
+  @if (historico.error()) {
+    <div class="empty-state">
+      Erro ao carregar o histórico.
+      <button type="button" class="link" (click)="historico.reload()">Tentar novamente</button>
+    </div>
+  } @else if (!historico.hasValue()) {
+    <div class="empty-state">Carregando…</div>
+  } @else {
+    <div class="table-wrap" [class.is-refreshing]="historico.isLoading()">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Abertura</th>
+            <th>Fechamento</th>
+            <th>Responsável</th>
+            <th class="num">Saídas</th>
+            <th class="num">Na gaveta</th>
+            <th class="num">Total recebido</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of historico.value(); track c.id) {
+            <tr>
+              <td>{{ c.abertura | date: 'dd/MM/yyyy HH:mm' }}</td>
+              <td>
+                @if (c.fechamento) {
+                  {{ c.fechamento | date: 'dd/MM/yyyy HH:mm' }}
+                } @else {
+                  <span class="badge badge--ok">Aberto</span>
+                }
+              </td>
+              <td>
+                {{ c.abertoPor }}
+                @if (c.fechadoPor && c.fechadoPor !== c.abertoPor) {
+                  <span class="table__sub">fechado por {{ c.fechadoPor }}</span>
+                }
+              </td>
+              <td class="num">{{ c.saidas }}</td>
+              <td class="num">{{ c.dinheiroEmGaveta | currency: 'BRL' }}</td>
+              <td class="num strong">{{ c.totalRecebido | currency: 'BRL' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty-state">Nenhum caixa no período.</td>
+            </tr>
+          }
+        </tbody>
+        @if (historico.value().length > 1) {
+          <tfoot>
+            <tr>
+              <th colspan="3">Total do período</th>
+              <td class="num">{{ totaisHistorico().saidas }}</td>
+              <td></td>
+              <td class="num">{{ totaisHistorico().total | currency: 'BRL' }}</td>
+            </tr>
+          </tfoot>
+        }
+      </table>
+    </div>
+  }
+</section>
+
+<app-modal size="sm" title="Fechar caixa" [(open)]="fechando">
+  @if (atual.value(); as caixa) {
+    <p>Confira os valores antes de fechar. Depois disso, novas saídas exigem um novo caixa.</p>
+    <dl class="details">
+      <dt>Saídas</dt>
+      <dd>{{ caixa.saidas }}</dd>
+      <dt>Total recebido</dt>
+      <dd>{{ caixa.totalRecebido | currency: 'BRL' }}</dd>
+      <dt>Dinheiro na gaveta</dt>
+      <dd>{{ caixa.dinheiroEmGaveta | currency: 'BRL' }}</dd>
+    </dl>
+  }
+  <div modal-footer>
+    <button type="button" class="btn btn--ghost" (click)="fechando.set(false)">Cancelar</button>
+    <button type="button" class="btn btn--danger" [disabled]="salvando()" (click)="confirmarFechamento()">
+      {{ salvando() ? 'Fechando…' : 'Fechar caixa' }}
+    </button>
+  </div>
+</app-modal>

@@ -1,0 +1,121 @@
+<header class="page-header">
+  <div>
+    <h1>{{ saudacao() }}</h1>
+    <p class="text-muted">Ocupação do pátio agora e o movimento de hoje.</p>
+  </div>
+  <div class="row">
+    <a class="btn" routerLink="/painel/patio">
+      <app-icon name="car" />
+      Ver pátio
+    </a>
+    <a class="btn btn--primary" routerLink="/painel/patio" [queryParams]="{ acao: 'entrada' }">
+      <app-icon name="log-in" />
+      Registrar entrada
+    </a>
+  </div>
+</header>
+
+@if (dashboard.error()) {
+  <div class="alert alert--danger">
+    <app-icon name="alert" />
+    Não foi possível carregar o painel.
+    <button type="button" class="link" (click)="dashboard.reload()">Tentar novamente</button>
+  </div>
+} @else if (!dashboard.hasValue()) {
+  <div class="kpi-grid">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <div class="kpi card skeleton"></div>
+    }
+  </div>
+} @else {
+  @let d = dashboard.value();
+  @let o = ocupacao()!;
+  <div class="kpi-grid" [class.is-refreshing]="dashboard.isLoading()">
+    <a class="kpi card kpi--hero" routerLink="/painel/patio">
+      <span class="kpi__label">Vagas livres</span>
+      <strong class="kpi__value">
+        {{ d.livres }} <small class="text-muted">de {{ d.vagas }}</small>
+      </strong>
+      <span class="meter" [style.--tone]="'var(--' + (o.tom === 'ok' ? 'success' : o.tom) + ')'">
+        <span class="meter__fill" [style.width.%]="o.pct"></span>
+      </span>
+      <span class="kpi__hint">
+        <span [class]="'badge badge--' + o.tom">{{ o.rotulo }}</span>
+        {{ d.ocupadas }} ocupadas ({{ o.texto }})
+      </span>
+    </a>
+    <div class="kpi card kpi--info">
+      <span class="kpi__icon"><app-icon name="log-in" [size]="20" /></span>
+      <span class="kpi__label">Entradas hoje</span>
+      <strong class="kpi__value">{{ numero(d.entradasHoje) }}</strong>
+      <span class="kpi__hint">{{ numero(d.saidasHoje) }} saídas registradas</span>
+    </div>
+    <div class="kpi card kpi--success">
+      <span class="kpi__icon"><app-icon name="cash" [size]="20" /></span>
+      <span class="kpi__label">Faturamento hoje</span>
+      <strong class="kpi__value">{{ d.faturamentoHoje | currency: 'BRL' }}</strong>
+      <span class="kpi__hint">Saídas pagas desde 0h</span>
+    </div>
+    <div class="kpi card kpi--warning">
+      <span class="kpi__icon"><app-icon name="clock" [size]="20" /></span>
+      <span class="kpi__label">Permanência média</span>
+      <strong class="kpi__value">{{ duracao(d.permanenciaMediaHojeMinutos) }}</strong>
+      <span class="kpi__hint">Veículos que já saíram hoje</span>
+    </div>
+  </div>
+
+  <div class="grid-2 grid-2--wide-right" [class.is-refreshing]="dashboard.isLoading()">
+    <div class="stack">
+      <section class="card">
+        <header class="card__header">
+          <h2>Caixa</h2>
+          @if (d.caixa) {
+            <span class="badge badge--ok"><app-icon name="unlock" [size]="14" /> Aberto</span>
+          } @else {
+            <span class="badge badge--warning"><app-icon name="lock" [size]="14" /> Fechado</span>
+          }
+        </header>
+        <div class="card__body stack">
+          @if (d.caixa; as caixa) {
+            <dl class="details">
+              <dt>Aberto em</dt>
+              <dd>{{ caixa.abertura | date: 'dd/MM HH:mm' }} por {{ caixa.abertoPor }}</dd>
+              <dt>Saídas</dt>
+              <dd>{{ caixa.saidas }}</dd>
+              <dt>Recebido</dt>
+              <dd>{{ caixa.totalRecebido | currency: 'BRL' }}</dd>
+              <dt>Na gaveta</dt>
+              <dd>{{ caixa.dinheiroEmGaveta | currency: 'BRL' }}</dd>
+            </dl>
+          } @else {
+            <p class="text-muted no-margin">
+              Sem caixa aberto, as saídas do pátio ficam bloqueadas. Abra o caixa para começar o turno.
+            </p>
+          }
+          <a class="btn align-start" routerLink="/painel/caixa">
+            <app-icon name="wallet" />
+            {{ d.caixa ? 'Ver caixa' : 'Abrir caixa' }}
+          </a>
+        </div>
+      </section>
+
+      <section class="card">
+        <header class="card__header">
+          <h2>No pátio por tipo</h2>
+        </header>
+        <div class="card__body">
+          <app-bar-chart caption="Veículos no pátio por tipo" orientation="horizontal" [data]="porTipo()" />
+        </div>
+      </section>
+    </div>
+
+    <section class="card">
+      <header class="card__header">
+        <h2>Entradas por hora hoje</h2>
+      </header>
+      <div class="card__body">
+        <app-bar-chart caption="Entradas por hora hoje" [data]="porHora()" [labelEvery]="3" [height]="260" />
+      </div>
+    </section>
+  </div>
+}

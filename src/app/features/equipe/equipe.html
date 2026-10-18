@@ -1,0 +1,219 @@
+<header class="page-header">
+  <div>
+    <h1>Equipe</h1>
+    <p class="text-muted">Funções e funcionários do estacionamento.</p>
+  </div>
+</header>
+
+<div class="grid-2 grid-2--wide-right">
+  <section class="card">
+    <header class="card__header">
+      <h2>Funções</h2>
+      <button
+        type="button"
+        class="btn btn--primary btn--sm"
+        (click)="editar({ tipo: 'funcao', funcao: null })"
+      >
+        <app-icon name="plus" [size]="16" />
+        Nova função
+      </button>
+    </header>
+    @if (funcoes.error()) {
+      <div class="empty-state">
+        Erro ao carregar as funções.
+        <button type="button" class="link" (click)="funcoes.reload()">Tentar novamente</button>
+      </div>
+    } @else if (!funcoes.hasValue()) {
+      <div class="empty-state">Carregando…</div>
+    } @else {
+      <div class="table-wrap">
+        <table class="table" aria-label="Funções">
+          <thead>
+            <tr>
+              <th>Função</th>
+              <th class="num">Pessoas</th>
+              <th class="center">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (funcao of funcoes.value(); track funcao.id) {
+              <tr>
+                <td class="strong">{{ funcao.nome }}</td>
+                <td class="num">{{ funcao.funcionarios }}</td>
+                <td class="center nowrap">
+                  <button
+                    type="button"
+                    class="btn-icon"
+                    [attr.aria-label]="'Editar ' + funcao.nome"
+                    (click)="editar({ tipo: 'funcao', funcao })"
+                  >
+                    <app-icon name="pencil" [size]="16" />
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-icon btn-icon--danger"
+                    [attr.aria-label]="'Excluir ' + funcao.nome"
+                    (click)="exclusao.set({ tipo: 'funcao', item: funcao })"
+                  >
+                    <app-icon name="trash" [size]="16" />
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="3" class="empty-state">Nenhuma função cadastrada.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <section class="card">
+    <header class="card__header">
+      <h2>Funcionários</h2>
+      <button
+        type="button"
+        class="btn btn--primary btn--sm"
+        [disabled]="!funcoes.value()?.length"
+        (click)="editar({ tipo: 'funcionario', funcionario: null })"
+      >
+        <app-icon name="plus" [size]="16" />
+        Novo funcionário
+      </button>
+    </header>
+    <div class="toolbar">
+      <label class="search">
+        <app-icon name="search" [size]="16" />
+        <input
+          class="input"
+          type="search"
+          aria-label="Buscar funcionário"
+          placeholder="Nome, função ou CPF…"
+          [value]="busca()"
+          (input)="busca.set($any($event.target).value)"
+        />
+      </label>
+    </div>
+    @if (funcionarios.error()) {
+      <div class="empty-state">
+        Erro ao carregar os funcionários.
+        <button type="button" class="link" (click)="funcionarios.reload()">Tentar novamente</button>
+      </div>
+    } @else if (!funcionarios.hasValue()) {
+      <div class="empty-state">Carregando…</div>
+    } @else {
+      <div class="table-wrap">
+        <table class="table" aria-label="Funcionários">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>CPF</th>
+              <th>Nascimento</th>
+              <th>Admissão</th>
+              <th class="center">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (f of daPagina(); track f.id) {
+              <tr>
+                <td>
+                  <span class="strong">{{ f.nome }}</span>
+                  <span class="table__sub">{{ f.funcao.nome }}</span>
+                </td>
+                <td class="mono">{{ cpf(f.cpf) }}</td>
+                <td>{{ f.nascimento | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ f.admissao | date: 'dd/MM/yyyy' }}</td>
+                <td class="center nowrap">
+                  <button
+                    type="button"
+                    class="btn-icon"
+                    [attr.aria-label]="'Editar ' + f.nome"
+                    (click)="editar({ tipo: 'funcionario', funcionario: f })"
+                  >
+                    <app-icon name="pencil" [size]="16" />
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-icon btn-icon--danger"
+                    [attr.aria-label]="'Excluir ' + f.nome"
+                    (click)="exclusao.set({ tipo: 'funcionario', item: f })"
+                  >
+                    <app-icon name="trash" [size]="16" />
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty-state">Nenhum funcionário encontrado.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <app-paginator [total]="filtrados().length" [pageSize]="tamanho" [(page)]="pagina" />
+    }
+  </section>
+</div>
+
+<app-modal
+  [title]="tituloEdicao()"
+  [size]="edicao()?.tipo === 'funcionario' ? 'lg' : 'md'"
+  [open]="edicao() !== null"
+  (openChange)="!$event && edicao.set(null)"
+>
+  @if (edicao(); as e) {
+    @if (e.tipo === 'funcao') {
+      <app-nome-form
+        formId="funcao-form"
+        label="Nome da função"
+        placeholder="Ex.: Manobrista"
+        [inicial]="e.funcao?.nome ?? ''"
+        [existentes]="nomesDeFuncoes()"
+        [erro]="erro()"
+        (enviado)="salvarFuncao($event)"
+      />
+    } @else {
+      <app-funcionario-form
+        [funcionario]="e.funcionario"
+        [funcoes]="funcoes.value() ?? []"
+        [funcionarios]="funcionarios.value() ?? []"
+        [erro]="erro()"
+        (enviado)="salvarFuncionario($event)"
+      />
+    }
+  }
+  <div modal-footer>
+    <button type="button" class="btn btn--ghost" (click)="edicao.set(null)">Cancelar</button>
+    <button
+      type="submit"
+      class="btn btn--primary"
+      [attr.form]="edicao()?.tipo === 'funcao' ? 'funcao-form' : 'funcionario-form'"
+      [disabled]="salvando()"
+    >
+      {{ salvando() ? 'Salvando…' : 'Salvar' }}
+    </button>
+  </div>
+</app-modal>
+
+<app-modal
+  size="sm"
+  [title]="exclusao()?.tipo === 'funcao' ? 'Excluir função' : 'Excluir funcionário'"
+  [open]="exclusao() !== null"
+  (openChange)="!$event && exclusao.set(null)"
+>
+  @if (exclusao(); as e) {
+    <p>
+      Deseja mesmo excluir {{ e.tipo === 'funcao' ? 'a função' : 'o funcionário' }}
+      <strong>{{ e.item.nome }}</strong
+      >?
+    </p>
+  }
+  <div modal-footer>
+    <button type="button" class="btn btn--ghost" (click)="exclusao.set(null)">Cancelar</button>
+    <button type="button" class="btn btn--danger" [disabled]="salvando()" (click)="confirmarExclusao()">
+      {{ salvando() ? 'Excluindo…' : 'Excluir' }}
+    </button>
+  </div>
+</app-modal>

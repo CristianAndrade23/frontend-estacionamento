@@ -1,0 +1,96 @@
+<header class="page-header">
+  <div>
+    <h1>Relatório da equipe</h1>
+    <p class="text-muted">Composição da equipe, tempo de casa e aniversariantes de {{ mes }}.</p>
+  </div>
+</header>
+
+@if (funcionarios.error()) {
+  <div class="alert alert--danger">
+    <app-icon name="alert" />
+    Não foi possível carregar a equipe.
+    <button type="button" class="link" (click)="funcionarios.reload()">Tentar novamente</button>
+  </div>
+} @else if (!funcionarios.hasValue()) {
+  <div class="kpi-grid">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <div class="kpi card skeleton"></div>
+    }
+  </div>
+} @else {
+  @let s = stats();
+  <div class="kpi-grid">
+    <div class="kpi card kpi--info">
+      <span class="kpi__icon"><app-icon name="users" [size]="20" /></span>
+      <span class="kpi__label">Funcionários</span>
+      <strong class="kpi__value">{{ s.total }}</strong>
+      <span class="kpi__hint">em {{ s.porFuncao.length }} funções</span>
+    </div>
+    <div class="kpi card">
+      <span class="kpi__icon"><app-icon name="id-card" [size]="20" /></span>
+      <span class="kpi__label">Idade média</span>
+      <strong class="kpi__value">{{ s.idadeMedia }} anos</strong>
+    </div>
+    <div class="kpi card kpi--success">
+      <span class="kpi__icon"><app-icon name="calendar" [size]="20" /></span>
+      <span class="kpi__label">Tempo médio de casa</span>
+      <strong class="kpi__value kpi__value--texto">{{ meses(s.tempoMedioMeses) }}</strong>
+    </div>
+    <div class="kpi card kpi--warning">
+      <span class="kpi__icon"><app-icon name="cake" [size]="20" /></span>
+      <span class="kpi__label">Aniversariantes do mês</span>
+      <strong class="kpi__value">{{ s.aniversariantes.length }}</strong>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <section class="card">
+      <header class="card__header"><h2>Por função</h2></header>
+      <div class="card__body">
+        <app-bar-chart caption="Funcionários por função" orientation="horizontal" [data]="porFuncao()" />
+      </div>
+    </section>
+    <section class="card">
+      <header class="card__header"><h2>Tempo de casa</h2></header>
+      <div class="card__body">
+        <app-bar-chart
+          caption="Funcionários por tempo de casa"
+          orientation="horizontal"
+          [data]="tempoDeCasa()"
+        />
+      </div>
+    </section>
+  </div>
+
+  <section class="card aniversariantes">
+    <header class="card__header">
+      <h2>Aniversariantes de {{ mes }}</h2>
+    </header>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Dia</th>
+            <th>Nome</th>
+            <th>Função</th>
+            <th class="num">Completa</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (a of s.aniversariantes; track a.funcionario.id) {
+            <tr>
+              <td class="strong">{{ a.dia }}</td>
+              <td>{{ a.funcionario.nome }}</td>
+              <td>{{ a.funcionario.funcao.nome }}</td>
+              <td class="num">{{ a.idade }} anos</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="empty-state">Ninguém faz aniversário este mês.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+}

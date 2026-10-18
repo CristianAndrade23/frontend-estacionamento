@@ -1,0 +1,219 @@
+<header class="page-header">
+  <div>
+    <h1>Marcas e modelos</h1>
+    <p class="text-muted">
+      Cadastro usado na entrada de veículos. O tipo do modelo define a tabela de preços.
+    </p>
+  </div>
+</header>
+
+<div class="grid-2 grid-2--wide-right">
+  <section class="card">
+    <header class="card__header">
+      <h2>Marcas</h2>
+      <button type="button" class="btn btn--primary btn--sm" (click)="editar({ tipo: 'marca', marca: null })">
+        <app-icon name="plus" [size]="16" />
+        Nova marca
+      </button>
+    </header>
+    @if (marcas.error()) {
+      <div class="empty-state">
+        Erro ao carregar as marcas.
+        <button type="button" class="link" (click)="marcas.reload()">Tentar novamente</button>
+      </div>
+    } @else if (!marcas.hasValue()) {
+      <div class="empty-state">Carregando…</div>
+    } @else {
+      <div class="table-wrap">
+        <table class="table" aria-label="Marcas">
+          <thead>
+            <tr>
+              <th>Marca</th>
+              <th class="num">Modelos</th>
+              <th class="center">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (marca of marcas.value(); track marca.id) {
+              <tr>
+                <td class="strong">{{ marca.nome }}</td>
+                <td class="num">{{ marca.modelos }}</td>
+                <td class="center nowrap">
+                  <button
+                    type="button"
+                    class="btn-icon"
+                    [attr.aria-label]="'Editar ' + marca.nome"
+                    (click)="editar({ tipo: 'marca', marca })"
+                  >
+                    <app-icon name="pencil" [size]="16" />
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-icon btn-icon--danger"
+                    [attr.aria-label]="'Excluir ' + marca.nome"
+                    (click)="exclusao.set({ tipo: 'marca', item: marca })"
+                  >
+                    <app-icon name="trash" [size]="16" />
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="3" class="empty-state">Nenhuma marca cadastrada.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <section class="card">
+    <header class="card__header">
+      <h2>Modelos</h2>
+      <button
+        type="button"
+        class="btn btn--primary btn--sm"
+        [disabled]="!marcas.value()?.length"
+        (click)="editar({ tipo: 'modelo', modelo: null })"
+      >
+        <app-icon name="plus" [size]="16" />
+        Novo modelo
+      </button>
+    </header>
+    <div class="toolbar">
+      <label class="search">
+        <app-icon name="search" [size]="16" />
+        <input
+          class="input"
+          type="search"
+          aria-label="Buscar modelo"
+          placeholder="Buscar modelo…"
+          [value]="busca()"
+          (input)="busca.set($any($event.target).value)"
+        />
+      </label>
+      <select
+        class="input"
+        style="max-width: 220px"
+        aria-label="Filtrar por marca"
+        (change)="filtrarMarca($any($event.target).value)"
+      >
+        <option value="">Todas as marcas</option>
+        @for (m of marcas.value() ?? []; track m.id) {
+          <option [value]="m.id">{{ m.nome }}</option>
+        }
+      </select>
+    </div>
+    @if (modelos.error()) {
+      <div class="empty-state">
+        Erro ao carregar os modelos.
+        <button type="button" class="link" (click)="modelos.reload()">Tentar novamente</button>
+      </div>
+    } @else if (!modelos.hasValue()) {
+      <div class="empty-state">Carregando…</div>
+    } @else {
+      <div class="table-wrap">
+        <table class="table" aria-label="Modelos">
+          <thead>
+            <tr>
+              <th>Modelo</th>
+              <th>Marca</th>
+              <th>Tipo</th>
+              <th class="center">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (modelo of modelosDaPagina(); track modelo.id) {
+              <tr>
+                <td class="strong">{{ modelo.nome }}</td>
+                <td>{{ modelo.marca.nome }}</td>
+                <td>
+                  <span class="badge">{{ tipo(modelo.tipo) }}</span>
+                </td>
+                <td class="center nowrap">
+                  <button
+                    type="button"
+                    class="btn-icon"
+                    [attr.aria-label]="'Editar ' + modelo.nome"
+                    (click)="editar({ tipo: 'modelo', modelo })"
+                  >
+                    <app-icon name="pencil" [size]="16" />
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-icon btn-icon--danger"
+                    [attr.aria-label]="'Excluir ' + modelo.nome"
+                    (click)="exclusao.set({ tipo: 'modelo', item: modelo })"
+                  >
+                    <app-icon name="trash" [size]="16" />
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="empty-state">Nenhum modelo encontrado.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <app-paginator [total]="modelosFiltrados().length" [pageSize]="tamanho" [(page)]="pagina" />
+    }
+  </section>
+</div>
+
+<app-modal [title]="tituloEdicao()" [open]="edicao() !== null" (openChange)="!$event && edicao.set(null)">
+  @if (edicao(); as e) {
+    @if (e.tipo === 'marca') {
+      <app-nome-form
+        formId="marca-form"
+        label="Nome da marca"
+        placeholder="Ex.: Volkswagen"
+        [inicial]="e.marca?.nome ?? ''"
+        [existentes]="nomesDeMarcas()"
+        [erro]="erro()"
+        (enviado)="salvarMarca($event)"
+      />
+    } @else {
+      <app-modelo-form
+        [modelo]="e.modelo"
+        [marcas]="marcas.value() ?? []"
+        [modelos]="modelos.value() ?? []"
+        [erro]="erro()"
+        (enviado)="salvarModelo($event)"
+      />
+    }
+  }
+  <div modal-footer>
+    <button type="button" class="btn btn--ghost" (click)="edicao.set(null)">Cancelar</button>
+    <button
+      type="submit"
+      class="btn btn--primary"
+      [attr.form]="edicao()?.tipo === 'marca' ? 'marca-form' : 'modelo-form'"
+      [disabled]="salvando()"
+    >
+      {{ salvando() ? 'Salvando…' : 'Salvar' }}
+    </button>
+  </div>
+</app-modal>
+
+<app-modal
+  size="sm"
+  [title]="exclusao()?.tipo === 'marca' ? 'Excluir marca' : 'Excluir modelo'"
+  [open]="exclusao() !== null"
+  (openChange)="!$event && exclusao.set(null)"
+>
+  @if (exclusao(); as e) {
+    <p>
+      Deseja mesmo excluir {{ e.tipo === 'marca' ? 'a marca' : 'o modelo' }} <strong>{{ e.item.nome }}</strong
+      >?
+    </p>
+  }
+  <div modal-footer>
+    <button type="button" class="btn btn--ghost" (click)="exclusao.set(null)">Cancelar</button>
+    <button type="button" class="btn btn--danger" [disabled]="salvando()" (click)="confirmarExclusao()">
+      {{ salvando() ? 'Excluindo…' : 'Excluir' }}
+    </button>
+  </div>
+</app-modal>

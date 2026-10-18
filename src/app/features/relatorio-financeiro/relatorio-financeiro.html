@@ -1,0 +1,129 @@
+<header class="page-header">
+  <div>
+    <h1>Relatório financeiro</h1>
+    <p class="text-muted">Receita pelas saídas pagas no período, descontadas as taxas das maquininhas.</p>
+  </div>
+</header>
+
+<app-period-filter [(periodo)]="periodo" inicial="mes" />
+
+@if (relatorio.error()) {
+  <div class="alert alert--danger">
+    <app-icon name="alert" />
+    Não foi possível carregar o relatório.
+    <button type="button" class="link" (click)="relatorio.reload()">Tentar novamente</button>
+  </div>
+} @else if (!relatorio.hasValue()) {
+  <div class="kpi-grid">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <div class="kpi card skeleton"></div>
+    }
+  </div>
+} @else {
+  @let r = relatorio.value();
+  <div [class.is-refreshing]="relatorio.isLoading()">
+    <div class="kpi-grid">
+      <div class="kpi card kpi--info">
+        <span class="kpi__icon"><app-icon name="cash" [size]="20" /></span>
+        <span class="kpi__label">Receita bruta</span>
+        <strong class="kpi__value">{{ r.receitaBruta | currency: 'BRL' }}</strong>
+        <span class="kpi__hint">{{ numero(r.pagamentos) }} pagamentos</span>
+      </div>
+      <div class="kpi card kpi--warning">
+        <span class="kpi__icon"><app-icon name="card" [size]="20" /></span>
+        <span class="kpi__label">Taxas de cartão</span>
+        <strong class="kpi__value">{{ r.taxas | currency: 'BRL' }}</strong>
+        <span class="kpi__hint">{{ percentual(r.taxas, r.receitaBruta) }} da receita</span>
+      </div>
+      <div class="kpi card kpi--success">
+        <span class="kpi__icon"><app-icon name="wallet" [size]="20" /></span>
+        <span class="kpi__label">Receita líquida</span>
+        <strong class="kpi__value">{{ r.receitaLiquida | currency: 'BRL' }}</strong>
+        <span class="kpi__hint">bruta − taxas</span>
+      </div>
+      <div class="kpi card">
+        <span class="kpi__icon"><app-icon name="tag" [size]="20" /></span>
+        <span class="kpi__label">Ticket médio</span>
+        <strong class="kpi__value">{{ r.ticketMedio | currency: 'BRL' }}</strong>
+        <span class="kpi__hint">por saída</span>
+      </div>
+    </div>
+
+    <div class="stack">
+      <section class="card">
+        <header class="card__header"><h2>Receita por dia</h2></header>
+        <div class="card__body">
+          <app-bar-chart
+            caption="Receita por dia"
+            [data]="porDia()"
+            [labelEvery]="labelEvery()"
+            [format]="brl"
+            [axisFormat]="brlCompacto"
+          />
+        </div>
+      </section>
+
+      <div class="grid-2">
+        <section class="card">
+          <header class="card__header"><h2>Por forma de pagamento</h2></header>
+          <div class="card__body">
+            <app-bar-chart
+              caption="Receita por forma de pagamento"
+              orientation="horizontal"
+              [data]="porForma()"
+              [format]="brl"
+            />
+          </div>
+        </section>
+        <section class="card">
+          <header class="card__header"><h2>Por tipo de veículo</h2></header>
+          <div class="card__body">
+            <app-bar-chart
+              caption="Receita por tipo de veículo"
+              orientation="horizontal"
+              [data]="porTipo()"
+              [format]="brl"
+            />
+          </div>
+        </section>
+      </div>
+
+      <section class="card">
+        <header class="card__header"><h2>Demonstrativo</h2></header>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Forma de pagamento</th>
+                <th class="num">Pagamentos</th>
+                <th class="num">Bruto</th>
+                <th class="num">Taxa</th>
+                <th class="num">Líquido</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (f of r.porForma; track f.forma) {
+                <tr>
+                  <td>{{ forma(f.forma) }}</td>
+                  <td class="num">{{ numero(f.quantidade) }}</td>
+                  <td class="num">{{ f.valor | currency: 'BRL' }}</td>
+                  <td class="num">{{ f.taxa ? '− ' : '' }}{{ f.taxa | currency: 'BRL' }}</td>
+                  <td class="num">{{ f.valor - f.taxa | currency: 'BRL' }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <th>Total</th>
+                <td class="num">{{ numero(r.pagamentos) }}</td>
+                <td class="num">{{ r.receitaBruta | currency: 'BRL' }}</td>
+                <td class="num">− {{ r.taxas | currency: 'BRL' }}</td>
+                <td class="num">{{ r.receitaLiquida | currency: 'BRL' }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+}

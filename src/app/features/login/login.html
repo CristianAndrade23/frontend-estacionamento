@@ -1,0 +1,62 @@
+<main class="login">
+  <section class="login__card card">
+    <div class="brand brand--dark">
+      <span class="brand__mark"><app-icon name="parking" [size]="22" /></span>
+      <span>Estaciona</span>
+    </div>
+    <p class="login__subtitle">Gestão do pátio, do caixa e da equipe do estacionamento.</p>
+
+    @if (expirada()) {
+      <div class="alert alert--warning" role="status">
+        <app-icon name="clock" />
+        Sua sessão expirou. Entre novamente.
+      </div>
+    }
+
+    <form class="stack" [formRoot]="loginForm">
+      <app-field [field]="loginForm.username" label="Usuário" for="username">
+        <input id="username" class="input" autocomplete="username" [formField]="loginForm.username" />
+      </app-field>
+
+      <app-field [field]="loginForm.password" label="Senha" for="password">
+        <input
+          id="password"
+          type="password"
+          class="input"
+          autocomplete="current-password"
+          [formField]="loginForm.password"
+        />
+      </app-field>
+
+      @if (erro(); as message) {
+        <div class="alert alert--danger" role="alert">
+          <app-icon name="alert" />
+          {{ message }}
+        </div>
+      }
+
+      <button class="btn btn--primary btn--block" type="submit" [disabled]="loginForm().submitting()">
+        {{ loginForm().submitting() ? 'Entrando…' : 'Entrar' }}
+      </button>
+    </form>
+
+    <div class="login__demo">
+      <p>Contas de demonstração:</p>
+      <div class="login__demo-options">
+        <button type="button" class="btn btn--sm" (click)="preencher('admin')">
+          <app-icon name="id-card" [size]="16" />
+          Administrador
+        </button>
+        <button type="button" class="btn btn--sm" (click)="preencher('operador')">
+          <app-icon name="users" [size]="16" />
+          Operador
+        </button>
+      </div>
+      <p class="login__demo-hint">
+        <code>{{ demo.admin.username }}</code> / <code>{{ demo.admin.password }}</code> acessa tudo.
+        <code>{{ demo.operador.username }}</code> / <code>{{ demo.operador.password }}</code> cuida do pátio e
+        do caixa.
+      </p>
+    </div>
+  </section>
+</main>
