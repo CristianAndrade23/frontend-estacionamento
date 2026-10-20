@@ -2,6 +2,10 @@
 
 Painel de gestão de estacionamento: entrada e saída de veículos com cobrança por faixa de tempo, caixa por turno, tabela de preços, cadastros de veículos e equipe, e relatórios operacionais e financeiros.
 
+**[Abrir a demo](https://cristianandrade23.github.io/frontend-estacionamento/)** · `admin` / `admin123` ou `operador` / `operador123`
+
+A demo roda no GitHub Pages com a API dentro do navegador: as regras do backend Java reescritas em TypeScript, com os **mesmos dados de demonstração** (inclusive a mesma sequência aleatória) e as mesmas validações e mensagens. Abre na hora, sem servidor, e os dados ficam no seu navegador.
+
 ![Tela inicial](docs/screenshots/inicio.png)
 
 > Projeto de portfólio. Começou em 2019 como um protótipo de telas em **Angular 7** (só HTML com dados fixos, sem backend) e foi **reescrito do zero em Angular 22**, com componentes standalone, signals, Signal Forms e change detection zoneless, mais uma **API em Java 25 + Spring Boot 4**. O código original continua no branch [`legacy-angular7`](../../tree/legacy-angular7). Todos os dados são fictícios.
@@ -37,6 +41,7 @@ Há dois perfis. O **administrador** acessa tudo. O **operador** cuida do pátio
 - **UI própria, sem bibliotecas**: modal sobre `<dialog>` nativo, toasts, paginação, ícones SVG e **gráficos de barras em HTML/CSS** acessíveis (foco por teclado, tooltip e tabela com os dados de cada gráfico).
 - **CSS com design tokens** e **tema escuro** automático (`prefers-color-scheme`). As cores dos gráficos foram validadas para contraste mínimo de 3:1 nos dois temas.
 - Carregamento inicial de cerca de **95 kB** transferidos; cada tela é baixada sob demanda.
+- **Modo demo sem servidor** ([`core/demo`](src/app/core/demo)): um `HttpInterceptorFn` responde as chamadas no navegador com as regras do backend portadas para TypeScript. O gerador de dados usa uma cópia exata do `java.util.Random` ([`java-random.ts`](src/app/core/demo/java-random.ts)), então produz os mesmos 45 dias de movimento que o `DemoData.java`. A paridade foi conferida rota a rota contra o jar rodando. O módulo é carregado sob demanda e não entra no build normal.
 
 ### Backend: Java 25 + Spring Boot 4
 
@@ -52,7 +57,7 @@ Há dois perfis. O **administrador** acessa tudo. O **operador** cuida do pátio
 
 | Camada | Ferramenta | O que cobre |
 |---|---|---|
-| Unitários do front | **Vitest** | placa, CPF e CNPJ, máscaras, datas e períodos, regra de cobrança, estatísticas da equipe e o formulário de funcionário |
+| Unitários do front | **Vitest** | placa, CPF e CNPJ, máscaras, datas e períodos, regra de cobrança, estatísticas da equipe, o formulário de funcionário e a API do modo demo (inclusive a cópia do `java.util.Random` contra valores do Java) |
 | API | **JUnit 5 + MockMvc** | autenticação e perfis, fluxo entrada → saída no caixa, lotação, validações, exclusões bloqueadas, relatórios, cobrança por faixa |
 | Ponta a ponta | **Cypress** | 36 cenários contra o jar real (Spring + Angular): login e perfis, pátio, caixa, preços, cadastros, equipe, relatórios, configurações e layout mobile |
 
@@ -70,6 +75,7 @@ backend/                         # API Spring Boot (Maven Wrapper: não precisa 
     └── demo/                    # dados de demonstração e POST /api/demo/reset
 src/app
 ├── core/                        # contratos da API, sessão, guards, interceptors e funções puras testadas
+│   └── demo/                    # API do modo demo, que roda no navegador (GitHub Pages)
 ├── shared/                      # modal, toast, paginação, gráfico, filtro de período, campo de formulário
 └── features/                    # uma pasta por tela (lazy loaded)
 cypress/                         # testes E2E e geração dos screenshots
@@ -99,6 +105,7 @@ Entre com **`admin` / `admin123`** (administrador) ou **`operador` / `operador12
 | Comando | O que faz |
 |---|---|
 | `npm run dev` | API + Angular em modo desenvolvimento |
+| `npm run start:demo` | só o Angular, com a API rodando no navegador (sem Java), como na demo publicada |
 | `npm run serve:prod` | build de produção dentro do jar e `java -jar` em http://localhost:8080 |
 | `npm test` | testes unitários do frontend (Vitest) |
 | `npm run test:api` | testes da API (JUnit + MockMvc) |

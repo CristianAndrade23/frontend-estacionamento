@@ -35,6 +35,17 @@ jobs:
       - name: Build de produção
         run: npx ng build
 
+      - name: Build da demo (GitHub Pages)
+        run: |
+          npx ng build --configuration demo --output-path dist/pages --base-href "/${{ github.event.repository.name }}/"
+          # Fallback de SPA: o GitHub Pages serve 404.html para rotas desconhecidas.
+          cp dist/pages/browser/index.html dist/pages/browser/404.html
+
+      - uses: actions/upload-pages-artifact@v5
+        if: github.event_name != 'pull_request'
+        with:
+          path: dist/pages/browser
+
   backend:
     name: Backend (JUnit e MockMvc)
     runs-on: ubuntu-latest
@@ -87,3 +98,18 @@ jobs:
           name: cypress-screenshots
           path: cypress/screenshots
           if-no-files-found: ignore
+
+  deploy:
+    name: Deploy da demo (GitHub Pages)
+    if: github.event_name != 'pull_request'
+    needs: [frontend, backend, e2e]
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
