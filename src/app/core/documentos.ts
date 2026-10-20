@@ -54,6 +54,18 @@ export function cnpjValido(cnpj: string): boolean {
   );
 }
 
+/** Completa 9 dígitos com os verificadores, formando um CPF válido. */
+export function completarCpf(noveDigitos: string): string {
+  const parcial = noveDigitos + digitoCpf(noveDigitos, 9, 10);
+  return parcial + digitoCpf(parcial, 10, 11);
+}
+
+/** Completa 12 dígitos com os verificadores, formando um CNPJ válido. */
+export function completarCnpj(dozeDigitos: string): string {
+  const parcial = dozeDigitos + digitoCnpj(dozeDigitos, [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+  return parcial + digitoCnpj(parcial, [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+}
+
 /** Aplica uma máscara com `#` nas posições de dígito, parando no último dígito digitado. */
 function mascarar(valor: string, mascara: string): string {
   const digitos = somenteDigitos(valor);
